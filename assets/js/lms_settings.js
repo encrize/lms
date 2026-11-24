@@ -25,21 +25,36 @@
         return (parts[0][0] + parts[1][0]).toUpperCase();
     }
 
-    // Load data from localStorage (empty on first launch)
+    // Load data with fallback across localStorage and sessionStorage
     function loadUserData() {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        let raw = null;
+        try {
+            raw = localStorage.getItem(STORAGE_KEY);
+        } catch (e) {}
+
+        if (!raw) {
+            try {
+                raw = sessionStorage.getItem(STORAGE_KEY);
+            } catch (e) {}
+        }
+
         if (!raw) {
             return {
                 fullName: '',
                 grades: {}
             };
         }
+
         try {
             const parsed = JSON.parse(raw);
-            return {
-                fullName: parsed.fullName || '',
+            const data = {
+                fullName: (parsed.fullName || '').trim(),
                 grades: parsed.grades || {}
             };
+            // Keep both storages synchronized
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+            try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+            return data;
         } catch (e) {
             return {
                 fullName: '',
@@ -49,7 +64,18 @@
     }
 
     function saveUserData(data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const json = JSON.stringify(data);
+        try { localStorage.setItem(STORAGE_KEY, json); } catch (e) {}
+        try { sessionStorage.setItem(STORAGE_KEY, json); } catch (e) {}
+
+        try {
+            if (window.BroadcastChannel) {
+                const bc = new BroadcastChannel('lms_sync_channel');
+                bc.postMessage(data);
+                bc.close();
+            }
+        } catch (e) {}
+
         updatePageUI();
     }
 
@@ -405,6 +431,21 @@
             });
         }
     }
+
+    // Sync across tabs & pages
+    window.addEventListener('storage', updatePageUI);
+    try {
+        if (window.BroadcastChannel) {
+            const bc = new BroadcastChannel('lms_sync_channel');
+            bc.onmessage = function (ev) {
+                if (ev && ev.data) {
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ev.data)); } catch (e) {}
+                    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(ev.data)); } catch (e) {}
+                    updatePageUI();
+                }
+            };
+        }
+    } catch (e) {}
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
