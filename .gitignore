@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary screenshots & logs
+*.log
+screenshot*.png
+preview*.png
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
