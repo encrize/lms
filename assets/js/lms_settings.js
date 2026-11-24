@@ -1,42 +1,21 @@
 /**
- * LMS Local Settings & Grades Management System
- * Handles:
- * - Dynamic Profile (Full Name & Initials)
- * - Dynamic Grades (0-100, Letter Grades, GPA calculation)
- * - Persistent storage in localStorage
- * - Empty initial state on first launch
- * - Reports / Settings Modal
+ * LMS Local Settings & Dynamic Data Management
+ * 100% Authentic Moodle look with hidden settings modal triggered via "Reports".
+ * Data persists in localStorage. Empty by default on first launch.
  */
 
 (function () {
     const STORAGE_KEY = 'lms_user_data';
 
     const COURSES = [
-        { id: '2759', name: 'Physical Education (Athletics) | Kubyshev Azamat', teacher: 'Azamat Kubyshev' },
-        { id: '2678', name: 'Information and Communication Technologies | Basheyeva Zhuldyz', teacher: 'Elvira Aitmukhanbetova, Zhuldyz Basheyeva' },
-        { id: '2647', name: 'Sociology | Nurkanat Anel', teacher: 'Assem Kusmanova, Anel Nurkanat, Iliyas Tileubergenov' },
-        { id: '2640', name: 'Discrete Mathematics | Mukhambetzhan Manshuk', teacher: 'Akerke Merzetkhan, Manshuk Mukhambetzhan' },
-        { id: '2634', name: 'Foreign Language 1 (B1) | Tatia Johnson', teacher: 'Tatia Johnson' },
-        { id: '2589', name: 'Psychology | Belessova Nursulu', teacher: 'Nursulu Belessova, Aituar Kospakov, Xeniya Tursunbayeva' },
-        { id: '2565', name: 'Introduction to Programming | Kydyrbekova Aigerim', teacher: 'Askar Khaimuldin, Aigerim Kydyrbekova' }
+        { id: '2759', rowIdx: 0, name: 'Physical Education (Athletics) | Kubyshev Azamat' },
+        { id: '2678', rowIdx: 1, name: 'Information and Communication Technologies | Basheyeva Zhuldyz' },
+        { id: '2647', rowIdx: 2, name: 'Sociology | Nurkanat Anel' },
+        { id: '2640', rowIdx: 3, name: 'Discrete Mathematics | Mukhambetzhan Manshuk' },
+        { id: '2634', rowIdx: 4, name: 'Foreign Language 1 (B1) | Tatia Johnson' },
+        { id: '2589', rowIdx: 5, name: 'Psychology | Belessova Nursulu' },
+        { id: '2565', rowIdx: 6, name: 'Introduction to Programming | Kydyrbekova Aigerim' }
     ];
-
-    function getLetterAndGpa(gradeNum) {
-        if (isNaN(gradeNum) || gradeNum === null || gradeNum === '') return { letter: '—', gpa: '—' };
-        const g = parseFloat(gradeNum);
-        if (g >= 95) return { letter: 'A', gpa: '4.0' };
-        if (g >= 90) return { letter: 'A-', gpa: '3.67' };
-        if (g >= 85) return { letter: 'B+', gpa: '3.33' };
-        if (g >= 80) return { letter: 'B', gpa: '3.0' };
-        if (g >= 75) return { letter: 'B-', gpa: '2.67' };
-        if (g >= 70) return { letter: 'C+', gpa: '2.33' };
-        if (g >= 65) return { letter: 'C', gpa: '2.0' };
-        if (g >= 60) return { letter: 'C-', gpa: '1.67' };
-        if (g >= 55) return { letter: 'D+', gpa: '1.33' };
-        if (g >= 50) return { letter: 'D', gpa: '1.0' };
-        if (g >= 25) return { letter: 'FX', gpa: '0' };
-        return { letter: 'F', gpa: '0' };
-    }
 
     function getInitials(name) {
         if (!name || typeof name !== 'string') return '';
@@ -46,7 +25,7 @@
         return (parts[0][0] + parts[1][0]).toUpperCase();
     }
 
-    // Load data with empty initial state on 1st launch
+    // Load data from localStorage (empty on first launch)
     function loadUserData() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) {
@@ -79,120 +58,65 @@
         const fullName = data.fullName.trim();
         const initials = getInitials(fullName);
 
-        // Update user dropdown name
+        // 1. Navbar user text & avatar
         document.querySelectorAll('.usertext').forEach(el => {
             el.textContent = fullName;
         });
 
-        // Update avatar initials
         document.querySelectorAll('.userinitials').forEach(el => {
             el.textContent = initials;
-            el.setAttribute('title', fullName);
-            el.setAttribute('aria-label', fullName);
-            if (!fullName) {
-                el.style.opacity = '0.5';
+            if (fullName) {
+                el.setAttribute('title', fullName);
+                el.setAttribute('aria-label', fullName);
             } else {
-                el.style.opacity = '1';
+                el.removeAttribute('title');
+                el.removeAttribute('aria-label');
             }
         });
 
-        // Update footer logininfo
+        // 2. Footer logininfo (authentic Moodle look)
         document.querySelectorAll('.logininfo').forEach(el => {
             if (fullName) {
-                el.innerHTML = `You are logged in as <a href="#">${fullName}</a> (<a href="javascript:void(0)" onclick="openLmsSettingsModal()">Edit</a> | <a href="./index.html">Log out</a>)`;
+                el.innerHTML = `You are logged in as <a href="#">${fullName}</a> (<a href="./index.html">Log out</a>)`;
             } else {
-                el.innerHTML = `You are logged in as <a href="javascript:void(0)" onclick="openLmsSettingsModal()">[Не указано - Нажмите для настройки]</a>`;
+                el.innerHTML = `You are logged in as <a href="#"></a> (<a href="./index.html">Log out</a>)`;
             }
         });
 
-        // If on grades.html, render the grades table
-        const gradesTableBody = document.getElementById('grades-table-body');
-        const gradesTableFoot = document.getElementById('grades-table-foot');
-        if (gradesTableBody) {
-            renderGradesTable(data, gradesTableBody, gradesTableFoot);
-        }
-
-        // If grades page header has user name
+        // 3. Grades page header & title
         const gradesUserName = document.getElementById('grades-user-name');
         if (gradesUserName) {
-            gradesUserName.textContent = fullName || 'Студент (ФИО не указано)';
+            gradesUserName.textContent = fullName;
         }
         const gradesUserAvatar = document.getElementById('grades-user-avatar');
         if (gradesUserAvatar) {
-            gradesUserAvatar.textContent = initials || '—';
-        }
-    }
-
-    function renderGradesTable(data, tbody, tfoot) {
-        tbody.innerHTML = '';
-        let totalScore = 0;
-        let count = 0;
-
-        COURSES.forEach((course, idx) => {
-            const rawGrade = data.grades[course.id];
-            const hasGrade = rawGrade !== undefined && rawGrade !== null && String(rawGrade).trim() !== '';
-            const gradeVal = hasGrade ? String(rawGrade).trim() : '—';
-            let letter = '—';
-            let percentage = '—';
-
-            if (hasGrade && !isNaN(gradeVal)) {
-                const num = parseFloat(gradeVal);
-                totalScore += num;
-                count++;
-                letter = getLetterAndGpa(num).letter;
-                percentage = num.toFixed(1) + '%';
-            } else if (hasGrade) {
-                letter = gradeVal;
-            }
-
-            const tr = document.createElement('tr');
-            tr.className = idx % 2 === 0 ? 'table-row-even' : 'table-row-odd';
-            tr.innerHTML = `
-                <td class="align-middle">
-                    <a href="./index.html#course-${course.id}" class="fw-bold text-decoration-none">
-                        <i class="fa fa-book me-2 text-primary" aria-hidden="true"></i>${course.name}
-                    </a>
-                    <div class="text-muted small ps-4">${course.teacher}</div>
-                </td>
-                <td class="text-center align-middle fw-bold ${hasGrade ? 'text-primary' : 'text-muted'}">
-                    ${gradeVal}
-                </td>
-                <td class="text-center align-middle text-muted">0–100</td>
-                <td class="text-center align-middle">${percentage}</td>
-                <td class="text-center align-middle">
-                    <span class="badge ${hasGrade ? 'bg-success text-white' : 'bg-secondary text-light'}" style="font-size: 0.9rem;">
-                        ${letter}
-                    </span>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        if (tfoot) {
-            if (count > 0) {
-                const avg = (totalScore / count).toFixed(2);
-                const info = getLetterAndGpa(totalScore / count);
-                tfoot.innerHTML = `
-                    <tr>
-                        <td class="text-end fw-bold">Средний балл (GPA / Average):</td>
-                        <td class="text-center fw-bold text-success">${avg}</td>
-                        <td class="text-center text-muted">0–100</td>
-                        <td class="text-center fw-bold">${avg}%</td>
-                        <td class="text-center"><span class="badge bg-primary fs-6">${info.letter} (${info.gpa})</span></td>
-                    </tr>
-                `;
+            gradesUserAvatar.textContent = initials;
+            if (fullName) {
+                gradesUserAvatar.setAttribute('title', fullName);
+                gradesUserAvatar.setAttribute('aria-label', fullName);
             } else {
-                tfoot.innerHTML = `
-                    <tr>
-                        <td class="text-end fw-bold">Средний балл (Average):</td>
-                        <td class="text-center text-muted">—</td>
-                        <td class="text-center text-muted">0–100</td>
-                        <td class="text-center text-muted">—</td>
-                        <td class="text-center text-muted">—</td>
-                    </tr>
-                `;
+                gradesUserAvatar.removeAttribute('title');
+                gradesUserAvatar.removeAttribute('aria-label');
             }
         }
+        const pageTitle = document.getElementById('grades-page-title');
+        if (pageTitle) {
+            document.title = fullName ? `Grades - ${fullName} | frontpage` : `Grades | frontpage`;
+        }
+
+        // 4. Grades table rows (authentic Moodle table)
+        COURSES.forEach(course => {
+            const cell = document.getElementById(`grade-report-overview-19734_r${course.rowIdx}_c1`);
+            if (cell) {
+                const rawGrade = data.grades[course.id];
+                if (rawGrade !== undefined && rawGrade !== null && String(rawGrade).trim() !== '') {
+                    const num = parseFloat(rawGrade);
+                    cell.textContent = !isNaN(num) ? num.toFixed(2) : String(rawGrade).trim();
+                } else {
+                    cell.textContent = '';
+                }
+            }
+        });
     }
 
     // Modal Builder and Controller
@@ -223,30 +147,28 @@
 
         modal.innerHTML = `
             <div class="modal-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light" style="border-top-left-radius:10px;border-top-right-radius:10px;">
-                <h5 class="modal-title m-0 d-flex align-items-center text-primary">
+                <h5 class="modal-title m-0 d-flex align-items-center text-primary" style="font-weight:600;">
                     <i class="fa fa-sliders me-2"></i> Настройки профиля и оценок
                 </h5>
                 <button type="button" class="btn-close" id="lms-modal-close-btn" aria-label="Close" style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body p-4" style="overflow-y:auto;max-height:calc(90vh - 140px);">
                 <div class="alert alert-info py-2 px-3 mb-3" style="font-size: 0.88rem;">
-                    <i class="fa fa-info-circle me-1"></i> Здесь вы можете указать своё <strong>Имя и Фамилию</strong> и настроить <strong>оценки</strong> по всем курсам. Все данные сохраняются в вашем браузере (localStorage).
+                    <i class="fa fa-info-circle me-1"></i> Здесь можно настроить <strong>ФИО</strong> и <strong>оценки</strong> по всем дисциплинам. Данные сохраняются в браузере (localStorage).
                 </div>
                 
                 <div class="mb-4">
                     <label for="lms-input-fullname" class="form-label fw-bold" style="font-size: 0.95rem;">
-                        <i class="fa fa-user me-1 text-primary"></i> Ваше Имя и Фамилия:
+                        <i class="fa fa-user me-1 text-primary"></i> Имя и Фамилия:
                     </label>
-                    <input type="text" class="form-control" id="lms-input-fullname" placeholder="Например: Иван Иванов" style="font-size: 1rem;">
-                    <div class="form-text text-muted" style="font-size: 0.8rem;">Отображается в правом верхнем углу меню, на аватаре и на странице оценок.</div>
+                    <input type="text" class="form-control" id="lms-input-fullname" placeholder="Например: Sairan Targynov" style="font-size: 1rem;">
                 </div>
 
                 <hr class="my-3">
 
                 <div class="mb-2">
                     <label class="form-label fw-bold d-flex justify-content-between align-items-center" style="font-size: 0.95rem;">
-                        <span><i class="fa fa-graduation-cap me-1 text-primary"></i> Оценки по дисциплинам:</span>
-                        <span class="badge bg-light text-dark border">Балл 0–100</span>
+                        <span><i class="fa fa-graduation-cap me-1 text-primary"></i> Оценки по дисциплинам (0–100):</span>
                     </label>
                     <div class="p-3 bg-light rounded border">
                         ${courseInputsHTML}
@@ -269,7 +191,6 @@
         document.body.appendChild(backdrop);
         document.body.appendChild(modal);
 
-        // Attach listeners
         document.getElementById('lms-modal-close-btn').onclick = closeLmsSettingsModal;
         document.getElementById('lms-modal-cancel-btn').onclick = closeLmsSettingsModal;
         backdrop.onclick = closeLmsSettingsModal;
@@ -287,7 +208,6 @@
 
             saveUserData({ fullName, grades });
             closeLmsSettingsModal();
-
             showToastNotification('Изменения успешно сохранены!');
         };
 
@@ -360,13 +280,10 @@
         }
     }
 
-    // Expose globally
     window.openLmsSettingsModal = openLmsSettingsModal;
     window.closeLmsSettingsModal = closeLmsSettingsModal;
 
-    // Attach click listeners to reports and grades menu items
     function setupNavHooks() {
-        // Toggle user dropdown reliably
         const userDropdownToggle = document.getElementById('action-menu-toggle-0');
         const userDropdownMenu = document.getElementById('action-menu-0-menu');
         if (userDropdownToggle && userDropdownMenu) {
@@ -405,8 +322,8 @@
         }
 
         // Language dropdown toggle
-        const langToggle = document.getElementById('drop-down-6b05b49b20c8e6b05b49b1ac8d14');
-        const langMenu = document.getElementById('drop-down-menu-6b05b49b20c8e6b05b49b1ac8d14');
+        const langToggle = document.getElementById('drop-down-6b05b49b20c8e6b05b49b1ac8d14') || document.querySelector('[data-bs-toggle="dropdown"][title="Language"]');
+        const langMenu = document.getElementById('drop-down-menu-6b05b49b20c8e6b05b49b1ac8d14') || (langToggle ? langToggle.nextElementSibling : null);
         if (langToggle && langMenu) {
             langToggle.removeAttribute('data-bs-toggle');
             langToggle.addEventListener('click', function (e) {
@@ -432,9 +349,10 @@
             });
         }
 
-        // Hook Reports to open settings
-        document.querySelectorAll('a[data-title*="reports"]').forEach(link => {
-            link.addEventListener('click', function (e) {
+        // Hook Reports to open settings modal secretly
+        const reportsLink = document.getElementById('menu-reports-link') || document.querySelector('a[data-title*="reports"]');
+        if (reportsLink) {
+            reportsLink.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 if (userDropdownMenu) {
@@ -443,20 +361,7 @@
                 }
                 openLmsSettingsModal();
             });
-        });
-
-        // Hook Preferences to open settings
-        document.querySelectorAll('a[data-title*="preferences"]').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (userDropdownMenu) {
-                    userDropdownMenu.classList.remove('show');
-                    if (userDropdownToggle) userDropdownToggle.classList.remove('show');
-                }
-                openLmsSettingsModal();
-            });
-        });
+        }
 
         // Hook Grades to navigate to grades.html
         document.querySelectorAll('a[data-title*="grades"]').forEach(link => {
@@ -491,7 +396,6 @@
             });
         }
 
-        // Close button inside notification popover
         const closeNotifBtn = document.querySelector('[data-action="close-notification-popover"]');
         if (closeNotifBtn && notifContainer) {
             closeNotifBtn.addEventListener('click', function (e) {
@@ -502,7 +406,6 @@
         }
     }
 
-    // Initialize on DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             setupNavHooks();

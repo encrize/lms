@@ -71,13 +71,6 @@ document.body.className += ' jsenabled';
                 
             </ul>
             <div id="usernavigation" class="navbar-nav my-1 ms-auto">
-                <div class="nav-item d-flex align-items-center me-2">
-                    <button type="button" class="btn btn-sm btn-primary text-white d-flex align-items-center shadow-sm px-2 py-1" onclick="openLmsSettingsModal()" title="Настройки профиля и оценок" style="font-weight: 500; font-size: 0.85rem; border-radius: 4px;">
-                        <i class="fa fa-sliders me-1" aria-hidden="true"></i>
-                        <span class="d-none d-md-inline">Настройки</span>
-                    </button>
-                </div>
-
                 <div class="divider border-start h-50 align-self-center mx-1"></div>
                 
                 <div class="popover-region collapsed popover-region-notifications"
@@ -190,16 +183,22 @@ document.body.className += ' jsenabled';
                                 <span class="menu-action-text">Profile</span>
                         </a>
                     <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
-                                                                <a href="./grades.html" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" tabindex="-1" id="menu-grades-link"><span class="menu-action-text"><i class="fa fa-graduation-cap me-2 text-primary" aria-hidden="true"></i>Grades</span></a>
+                                                                <a href="./grades.html" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" tabindex="-1" id="menu-grades-link">
+                                <span class="menu-action-text">Grades</span>
+                        </a>
                                                                 <a href="https://lms.astanait.edu.kz/calendar/view.php?view=month" class="dropdown-item menu-action" role="menuitem" data-title="calendar,core_calendar" tabindex="-1" >
                                 <span class="menu-action-text">Calendar</span>
                         </a>
                                                                 <a href="https://lms.astanait.edu.kz/user/files.php" class="dropdown-item menu-action" role="menuitem" data-title="privatefiles,moodle" tabindex="-1" >
                                 <span class="menu-action-text">Private files</span>
                         </a>
-                                                                <a href="javascript:void(0)" onclick="openLmsSettingsModal()" class="dropdown-item menu-action" role="menuitem" data-title="reports,core_reportbuilder" tabindex="-1" id="menu-reports-link"><span class="menu-action-text"><i class="fa fa-sliders me-2 text-primary" aria-hidden="true"></i>Reports (Настройки)</span></a>
+                                                                <a href="javascript:void(0)" onclick="openLmsSettingsModal()" class="dropdown-item menu-action" role="menuitem" data-title="reports,core_reportbuilder" tabindex="-1" id="menu-reports-link">
+                                <span class="menu-action-text">Reports</span>
+                        </a>
                     <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
-                                                                <a href="javascript:void(0)" onclick="openLmsSettingsModal()" class="dropdown-item menu-action" role="menuitem" data-title="preferences,moodle" tabindex="-1"><span class="menu-action-text"><i class="fa fa-gear me-2 text-primary" aria-hidden="true"></i>Preferences</span></a>
+                                                                <a href="https://lms.astanait.edu.kz/user/preferences.php" class="dropdown-item menu-action" role="menuitem" data-title="preferences,moodle" tabindex="-1" >
+                                <span class="menu-action-text">Preferences</span>
+                        </a>
                     <div class="dropdown-divider" role="presentation"><span class="filler">&nbsp;</span></div>
                                                                 <a href="https://lms.astanait.edu.kz/login/logout.php?sesskey=TBIHNVHEH8" class="dropdown-item menu-action" role="menuitem" data-title="logout,moodle" tabindex="-1" >
                                 <span class="menu-action-text">Log out</span>
