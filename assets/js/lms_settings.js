@@ -370,15 +370,19 @@
         const userDropdownToggle = document.getElementById('action-menu-toggle-0');
         const userDropdownMenu = document.getElementById('action-menu-0-menu');
         if (userDropdownToggle && userDropdownMenu) {
+            userDropdownToggle.removeAttribute('data-bs-toggle');
+
             userDropdownToggle.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const isShown = userDropdownMenu.classList.contains('show');
                 if (isShown) {
                     userDropdownMenu.classList.remove('show');
+                    userDropdownToggle.classList.remove('show');
                     userDropdownToggle.setAttribute('aria-expanded', 'false');
                 } else {
                     userDropdownMenu.classList.add('show');
+                    userDropdownToggle.classList.add('show');
                     userDropdownToggle.setAttribute('aria-expanded', 'true');
                 }
             });
@@ -386,7 +390,44 @@
             document.addEventListener('click', function (e) {
                 if (!userDropdownToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
                     userDropdownMenu.classList.remove('show');
+                    userDropdownToggle.classList.remove('show');
                     userDropdownToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    userDropdownMenu.classList.remove('show');
+                    userDropdownToggle.classList.remove('show');
+                    userDropdownToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Language dropdown toggle
+        const langToggle = document.getElementById('drop-down-6b05b49b20c8e6b05b49b1ac8d14');
+        const langMenu = document.getElementById('drop-down-menu-6b05b49b20c8e6b05b49b1ac8d14');
+        if (langToggle && langMenu) {
+            langToggle.removeAttribute('data-bs-toggle');
+            langToggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const isShown = langMenu.classList.contains('show');
+                if (isShown) {
+                    langMenu.classList.remove('show');
+                    langToggle.classList.remove('show');
+                    langToggle.setAttribute('aria-expanded', 'false');
+                } else {
+                    langMenu.classList.add('show');
+                    langToggle.classList.add('show');
+                    langToggle.setAttribute('aria-expanded', 'true');
+                }
+            });
+            document.addEventListener('click', function (e) {
+                if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+                    langMenu.classList.remove('show');
+                    langToggle.classList.remove('show');
+                    langToggle.setAttribute('aria-expanded', 'false');
                 }
             });
         }
@@ -396,7 +437,23 @@
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (userDropdownMenu) userDropdownMenu.classList.remove('show');
+                if (userDropdownMenu) {
+                    userDropdownMenu.classList.remove('show');
+                    if (userDropdownToggle) userDropdownToggle.classList.remove('show');
+                }
+                openLmsSettingsModal();
+            });
+        });
+
+        // Hook Preferences to open settings
+        document.querySelectorAll('a[data-title*="preferences"]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (userDropdownMenu) {
+                    userDropdownMenu.classList.remove('show');
+                    if (userDropdownToggle) userDropdownToggle.classList.remove('show');
+                }
                 openLmsSettingsModal();
             });
         });

@@ -45,7 +45,7 @@ html = re.sub(
 # 5. Add a Settings button in navbar header
 settings_nav_button = '''
                 <div class="nav-item d-flex align-items-center me-2">
-                    <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center shadow-sm" onclick="openLmsSettingsModal()" title="Настройки профиля и оценок">
+                    <button type="button" class="btn btn-sm btn-primary text-white d-flex align-items-center shadow-sm px-2 py-1" onclick="openLmsSettingsModal()" title="Настройки профиля и оценок" style="font-weight: 500; font-size: 0.85rem; border-radius: 4px;">
                         <i class="fa fa-sliders me-1" aria-hidden="true"></i>
                         <span class="d-none d-md-inline">Настройки</span>
                     </button>
