@@ -1,96 +1,38 @@
-# 🎓 Astana IT University — LMS Moodle (Local & Offline Copy)
+# Astana IT University LMS Moodle (Offline Clone)
 
-Полная автономная офлайн-копия портала **LMS Moodle (Astana IT University)** с поддержкой локального просмотра, настраиваемым профилем и интерактивной ведомостью оценок (Grades).
+A standalone, 100% offline replica of the Astana IT University LMS Moodle portal homepage and grades overview.
 
----
+## Features
 
-## ✨ Особенности
+- **Fully Offline:** All stylesheets, JavaScript runtime, React/ESM modules, FontAwesome webfonts, icons, and documents are bundled locally without external network calls.
+- **Authentic UI:** Exact Moodle Classic/Boost theme layout, navbar, course announcements, navigation tree, and grades table.
+- **Grades Overview (`grades.html`):** Native Moodle two-column course grade overview with local navigation.
+- **Persistent Session:** Profile name, avatar initials, and course grades persist across pages and tabs via local storage.
 
-1. **100% локальные ресурсы:**
-   - Все CSS-стили (включая Bootstrap и Classic Theme) скачаны и настроены локально.
-   - Все шрифты **FontAwesome** (`fa-solid-900`, `fa-regular-400`, `fa-brands-400` в форматах `.woff2` и `.ttf`) лежат локально в `assets/fonts/` — все значки и иконки отображаются без интернета.
-   - Все скрипты ядра Moodle, RequireJS, AMD-модули, React / ESM-модули и jQuery сохранены в `assets/js/`.
-   - Все логотипы, иконки SVG и аватары сохранены в `assets/images/`.
-   - Все прикреплённые документы и файлы из блока «Student's hot links» доступны локально в `assets/docs/`.
+## Quick Start
 
-2. **📊 Локальная страница оценок (Grades):**
-   - Доступна по нажатию на пункт **Grades** в пользовательском меню (или по прямой ссылке [grades.html](./grades.html)).
-   - Содержит таблицу всех 7 дисциплин с расчётом буквенных оценок (A, B, C, D, FX/F) и среднего балла (GPA).
-   - Включает навигацию Breadcrumbs (Home → Grades → Overview report).
-
-3. **⚙️ Настройки профиля и оценок через кнопку «Reports»:**
-   - По нажатию на **Reports (Настройки)** в выпадающем меню пользователя (или кнопку **«Настройки»** в навигационной панели) открывается модальное окно.
-   - Возможность указать своё **Имя и Фамилию** (автоматически обновляется имя в шапке, футере и инициалы на аватаре).
-   - Возможность выставить свои **оценки (0–100)** по каждому предмету.
-   - Все данные автоматически сохраняются в **`localStorage`** браузера и сохраняются между сессиями.
-   - Есть кнопка **«Очистить всё»** для мгновенного сброса.
-
-4. **🚀 Первый запуск:**
-   - При первом открытии страницы (когда в `localStorage` ещё нет записей) ФИО и оценки по умолчанию **пустые**, как и требовалось.
-
----
-
-## 📁 Структура проекта
-
-```text
-├── index.html                   # Главная страница портала
-├── grades.html                  # Локальная страница успеваемости (Grades)
-├── start.sh                     # Скрипт для быстрого запуска локального HTTP-сервера
-├── assets/
-│   ├── css/                     # Локальные стили (styles.css, yui-moodlesimple-min.css)
-│   ├── fonts/                   # Веб-шрифты FontAwesome (.woff2, .ttf)
-│   ├── images/                  # Логотипы, иконки, аватары и системная графика
-│   ├── js/                      # Скрипты Moodle, RequireJS, React, ESM, jQuery
-│   │   ├── amd/                 # Скомпилированные AMD-модули Moodle
-│   │   ├── esm/                 # ESM-модули React и дизайна
-│   │   └── lms_settings.js      # Логика настроек профиля, оценок и работы с localStorage
-│   └── docs/                    # Локальные файлы и документы
-├── lib/
-│   └── ajax/service-nologin.php # Локальный обработчик служебных AJAX-запросов
-├── build_local_site.py          # Скрипт сборки и локализации ресурсов
-└── build_grades_and_settings.py # Скрипт генерации интерфейса оценок и настроек
-```
-
----
-
-## 🚀 Запуск и просмотр
-
-### Способ 1. Через локальный веб-сервер (Рекомендуется)
-Выполните скрипт запуска:
+Start the local server:
 ```bash
 ./start.sh
 ```
-Или вручную через Python:
+Or directly via Python:
 ```bash
 python3 -m http.server 8080
 ```
-Затем откройте в браузере: [http://localhost:8080/index.html](http://localhost:8080/index.html).
+Open in browser: [http://localhost:8080/index.html](http://localhost:8080/index.html) (or open `index.html` directly).
 
-### Способ 2. Напрямую через файл (file://)
-Просто откройте файл `index.html` в любом браузере:
-```bash
-chromium index.html
-# или
-firefox index.html
+## Project Structure
+
+```text
+.
+├── index.html                   # Moodle portal homepage
+├── grades.html                  # Authentic grades overview page
+├── start.sh                     # Lightweight server startup script
+├── assets/
+│   ├── css/                     # Local stylesheets
+│   ├── fonts/                   # FontAwesome webfonts (.woff2, .ttf)
+│   ├── images/                  # Local icons and logos
+│   ├── js/                      # Local scripts (Moodle core, RequireJS, jQuery, ESM)
+│   └── docs/                    # Local documents and study guides
+└── lib/ajax/service-nologin.php # Local mock handler for background AJAX calls
 ```
-
----
-
-## 📤 Инструкция по отправке на GitHub
-
-Проект полностью инициализирован и готов к отправке. Чтобы загрузить его в свой репозиторий:
-
-1. Создайте новый пустой репозиторий на [GitHub](https://github.com/new).
-2. Выполните следующие команды в терминале:
-```bash
-# Привязать ваш удаленный репозиторий:
-git remote add origin https://github.com/<ВАШ_USERNAME>/<ИМЯ_РЕПОЗИТОРИЯ>.git
-
-# Переименовать ветку в main (если еще не main):
-git branch -M main
-
-# Отправить код на GitHub:
-git push -u origin main
-```
-
-> **Совет для GitHub Pages:** Вы можете включить **GitHub Pages** в настройках вашего репозитория (*Settings → Pages → Branch: main / root*), и сайт будет мгновенно доступен онлайн в интернете без какого-либо дополнительного хостинга!

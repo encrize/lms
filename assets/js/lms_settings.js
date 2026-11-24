@@ -174,27 +174,27 @@
         modal.innerHTML = `
             <div class="modal-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light" style="border-top-left-radius:10px;border-top-right-radius:10px;">
                 <h5 class="modal-title m-0 d-flex align-items-center text-primary" style="font-weight:600;">
-                    <i class="fa fa-sliders me-2"></i> Настройки профиля и оценок
+                    <i class="fa fa-sliders me-2"></i> Profile & Grade Settings
                 </h5>
                 <button type="button" class="btn-close" id="lms-modal-close-btn" aria-label="Close" style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;">&times;</button>
             </div>
             <div class="modal-body p-4" style="overflow-y:auto;max-height:calc(90vh - 140px);">
                 <div class="alert alert-info py-2 px-3 mb-3" style="font-size: 0.88rem;">
-                    <i class="fa fa-info-circle me-1"></i> Здесь можно настроить <strong>ФИО</strong> и <strong>оценки</strong> по всем дисциплинам. Данные сохраняются в браузере (localStorage).
+                    <i class="fa fa-info-circle me-1"></i> Configure your full name and course grades. Changes are stored locally in your browser.
                 </div>
                 
                 <div class="mb-4">
                     <label for="lms-input-fullname" class="form-label fw-bold" style="font-size: 0.95rem;">
-                        <i class="fa fa-user me-1 text-primary"></i> Имя и Фамилия:
+                        <i class="fa fa-user me-1 text-primary"></i> Full Name:
                     </label>
-                    <input type="text" class="form-control" id="lms-input-fullname" placeholder="Например: Sairan Targynov" style="font-size: 1rem;">
+                    <input type="text" class="form-control" id="lms-input-fullname" placeholder="e.g. Temirlan Abayev" style="font-size: 1rem;">
                 </div>
 
                 <hr class="my-3">
 
                 <div class="mb-2">
                     <label class="form-label fw-bold d-flex justify-content-between align-items-center" style="font-size: 0.95rem;">
-                        <span><i class="fa fa-graduation-cap me-1 text-primary"></i> Оценки по дисциплинам (0–100):</span>
+                        <span><i class="fa fa-graduation-cap me-1 text-primary"></i> Course Grades (0–100):</span>
                     </label>
                     <div class="p-3 bg-light rounded border">
                         ${courseInputsHTML}
@@ -203,12 +203,12 @@
             </div>
             <div class="modal-footer d-flex justify-content-between p-3 border-top bg-light" style="border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
                 <button type="button" class="btn btn-outline-danger btn-sm" id="lms-modal-reset-btn">
-                    <i class="fa fa-trash me-1"></i> Очистить всё (Пусто)
+                    <i class="fa fa-trash me-1"></i> Reset All
                 </button>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-secondary btn-sm" id="lms-modal-cancel-btn">Отмена</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="lms-modal-cancel-btn">Cancel</button>
                     <button type="button" class="btn btn-primary btn-sm px-3" id="lms-modal-save-btn">
-                        <i class="fa fa-check me-1"></i> Сохранить
+                        <i class="fa fa-check me-1"></i> Save Changes
                     </button>
                 </div>
             </div>
@@ -234,18 +234,18 @@
 
             saveUserData({ fullName, grades });
             closeLmsSettingsModal();
-            showToastNotification('Изменения успешно сохранены!');
+            showToastNotification('Changes saved successfully!');
         };
 
         document.getElementById('lms-modal-reset-btn').onclick = function () {
-            if (confirm('Сбросить имя и все оценки в пустое состояние?')) {
+            if (confirm('Reset full name and all course grades?')) {
                 document.getElementById('lms-input-fullname').value = '';
                 document.querySelectorAll('.grade-input').forEach(input => {
                     input.value = '';
                 });
                 saveUserData({ fullName: '', grades: {} });
                 closeLmsSettingsModal();
-                showToastNotification('Все данные очищены!');
+                showToastNotification('All data cleared!');
             }
         };
     }

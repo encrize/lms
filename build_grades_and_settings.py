@@ -116,20 +116,21 @@ def process_grades():
     c = c.replace('href="https://lms.astanait.edu.kz/login/logout.php?sesskey=TBIHNVHEH8"', 'href="./index.html"')
 
     # Title
-    c = c.replace('<title>Grades - Sairan Targynov | frontpage</title>', '<title id="grades-page-title">Grades | frontpage</title>')
+    c = re.sub(r'<title>Grades[^<]*</title>', '<title id="grades-page-title">Grades | frontpage</title>', c)
+    c = re.sub(r'<meta name="keywords" content="moodle, Grades[^"]*" />', '<meta name="keywords" content="moodle, Grades | frontpage" />', c)
 
     # User dropdown toggle
     c = c.replace('data-bs-toggle="dropdown"', 'data-toggle="action-menu"')
-    c = c.replace('<span class="usertext me-1">Sairan Targynov</span>', '<span class="usertext me-1"></span>')
-    c = c.replace('<span class="userinitials size-35" title="Sairan Targynov" aria-label="Sairan Targynov" role="img">ST</span>', '<span class="userinitials size-35" title="" aria-label="" role="img"></span>')
+    c = re.sub(r'<span class="usertext me-1">[^<]*</span>', '<span class="usertext me-1"></span>', c)
+    c = re.sub(r'<span class="userinitials size-35"[^>]*>[^<]*</span>', '<span class="userinitials size-35" title="" aria-label="" role="img"></span>', c)
 
     # Dropdown items
     c = c.replace('<a href="https://lms.astanait.edu.kz/grade/report/overview/index.php" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" tabindex="-1" >', '<a href="./grades.html" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" tabindex="-1" id="menu-grades-link">')
     c = c.replace('<a href="https://lms.astanait.edu.kz/reportbuilder/index.php" class="dropdown-item menu-action" role="menuitem" data-title="reports,core_reportbuilder" tabindex="-1" >', '<a href="javascript:void(0)" onclick="openLmsSettingsModal()" class="dropdown-item menu-action" role="menuitem" data-title="reports,core_reportbuilder" tabindex="-1" id="menu-reports-link">')
 
     # Header card student info
-    c = c.replace('<span class="userinitials size-100" title="Sairan Targynov" aria-label="Sairan Targynov" role="img">ST</span>', '<span class="userinitials size-100" id="grades-user-avatar" title="" aria-label="" role="img"></span>')
-    c = c.replace('<h1 class="h2 mb-0">Sairan Targynov</h1>', '<h1 class="h2 mb-0" id="grades-user-name"></h1>')
+    c = re.sub(r'<span class="userinitials size-100"[^>]*>[^<]*</span>', '<span class="userinitials size-100" id="grades-user-avatar" title="" aria-label="" role="img"></span>', c)
+    c = re.sub(r'<h1 class="h2 mb-0"[^>]*>[^<]*</h1>', '<h1 class="h2 mb-0" id="grades-user-name"></h1>', c)
 
     # Table course links
     course_ids = ['2759', '2678', '2647', '2640', '2634', '2589', '2565']
@@ -145,7 +146,7 @@ def process_grades():
         )
 
     # Footer logininfo
-    c = c.replace('<div class="logininfo">You are logged in as <a href="https://lms.astanait.edu.kz/user/profile.php?id=19734">Sairan Targynov</a> (<a href="https://lms.astanait.edu.kz/login/logout.php?sesskey=TBIHNVHEH8">Log out</a>)</div>',
+    c = c.replace('<div class="logininfo">You are logged in as <a href="https://lms.astanait.edu.kz/user/profile.php?id=19734">Temirlan Abayev</a> (<a href="https://lms.astanait.edu.kz/login/logout.php?sesskey=TBIHNVHEH8">Log out</a>)</div>',
                   '<div class="logininfo">You are logged in as <a href="#" id="footer-user-name"></a> (<a href="./index.html">Log out</a>)</div>')
 
     if 'assets/js/lms_settings.js' not in c:
